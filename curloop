@@ -1,0 +1,27 @@
+#!/bin/sh
+
+#set -e
+
+# Loop curl if the first argument is not an executable
+if ! type -- "$1" &>-
+then
+
+  if [ -n "$1" ] && [ "$1" -eq "$1" ] &>-
+  then
+    LOOP_SECS=$1
+    shift
+  elif [ -z "$LOOP_SECS" ]
+  then
+    LOOP_SECS=30
+  fi
+
+  [ -n "$LOOP_CURL" ] && set -- $LOOP_CURL "$@"
+  set -- curl "$@"
+
+  while :; do "$@"; sleep "$LOOP_SECS"; done
+
+else
+
+  exec "$@"
+
+fi
